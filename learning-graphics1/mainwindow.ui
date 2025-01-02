@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Embedded System Panel</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QVBoxLayout" name="mainLayout">
+
+    <item>
+     <widget class="QGroupBox" name="adcGroup">
+      <property name="title">
+       <string>ADC Joystick</string>
+      </property>
+      <layout class="QVBoxLayout" name="adcLayout">
+       <item>
+        <widget class="QLabel" name="adcXLabel">
+         <property name="text">
+          <string>JST X: DEC HEX</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="adcYLabel">
+         <property name="text">
+          <string>JST Y: DEC HEX</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+
+    <item>
+     <widget class="QGroupBox" name="joystickGroup">
+      <property name="title">
+       <string>Joystick Control</string>
+      </property>
+      <layout class="QVBoxLayout" name="joystickLayout">
+       <item>
+        <widget class="QGraphicsView" name="joystickView"/>
+       </item>
+      </layout>
+     </widget>
+    </item>
+
+    <item>
+     <widget class="QGroupBox" name="pwmGroup">
+      <property name="title">
+       <string>PWM Signals</string>
+      </property>
+      <layout class="QVBoxLayout" name="pwmLayout">
+       <item>
+        <widget class="QLabel" name="pwmPeriodLabel">
+         <property name="text">
+          <string>Period: DEC HEX</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="pwmRedLabel">
+         <property name="text">
+          <string>PWM Red: DEC HEX</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="pwmGreenLabel">
+         <property name="text">
+          <string>PWM Green: DEC HEX</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="pwmBlueLabel">
+         <property name="text">
+          <string>PWM Blue: DEC HEX</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+
+    <item>
+     <widget class="QGroupBox" name="ledGroup">
+      <property name="title">
+       <string>LED Status</string>
+      </property>
+      <layout class="QHBoxLayout" name="ledLayout">
+       <item>
+        <widget class="QLabel" name="ledRedLabel">
+         <property name="text">
+          <string>LED Red: X</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="ledGreenLabel">
+         <property name="text">
+          <string>LED Green: X</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="ledBlueLabel">
+         <property name="text">
+          <string>LED Blue: X</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+
+    <item>
+     <widget class="QGroupBox" name="buttonGroup">
+      <property name="title">
+       <string>Button Status</string>
+      </property>
+      <layout class="QHBoxLayout" name="buttonLayout">
+       <item>
+        <widget class="QLabel" name="button0Label">
+         <property name="text">
+          <string>Button 0: X</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="button1Label">
+         <property name="text">
+          <string>Button 1: X</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+
+    <item>
+     <widget class="QGroupBox" name="protocolGroup">
+      <property name="title">
+       <string>Communication Protocol</string>
+      </property>
+      <layout class="QVBoxLayout" name="protocolLayout">
+       <item>
+        <widget class="QLabel" name="protocolLabel">
+         <property name="text">
+          <string>Protocol: OSL-ASCII / OSL-RTU</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="baudRateLabel">
+         <property name="text">
+          <string>Baud Rate: 9600, 8E1</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar"/>
+  <widget class="QStatusBar" name="statusbar"/>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

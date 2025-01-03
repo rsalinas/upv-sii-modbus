@@ -5,4 +5,5 @@ SUBDIRS += \
     modbus-serial-slave \
     modbus-tcp-master \
     modbus-tcp-slave \
+    mqtt-client \
     simpleviewer

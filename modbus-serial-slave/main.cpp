@@ -1,10 +1,27 @@
 #include <QCommandLineParser>
 #include <QCoreApplication>
+#include <QSerialPortInfo>
 #include "ModbusSlave.h"
 
 int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
+
+    qDebug() << "Puertos serie disponibles:";
+    const QList<QSerialPortInfo> ports = QSerialPortInfo::availablePorts();
+
+    for (const QSerialPortInfo &port : ports) {
+        if (port.systemLocation().startsWith("/dev/pts/")) {
+            qDebug() << "Nombre del puerto:" << port.portName();
+            qDebug() << "Descripción:" << port.description();
+            qDebug() << "Fabricante:" << port.manufacturer();
+            qDebug() << "Número de serie:" << port.serialNumber();
+            qDebug() << "Sistema operativo local:" << port.systemLocation();
+            qDebug() << "---------------------------";
+        } else {
+            qDebug() << "Ignored: " << port.systemLocation();
+        }
+    }
 
     QCommandLineParser parser;
     parser.setApplicationDescription("Esclavo Modbus RTU");

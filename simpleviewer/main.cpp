@@ -9,7 +9,7 @@ int main(int argc, char *argv[])
 
     oscilloscope.resize(800, 600);
     oscilloscope.show();
-    QTimer::singleShot(00000, &a, &QApplication::quit);
+    //QTimer::singleShot(00000, &a, &QApplication::quit);
 
     return a.exec();
 }

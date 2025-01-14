@@ -56,7 +56,7 @@ bool ModbusSlave::initialize(const QString &port, int slaveId)
 
     setupRegisters();
 
-    tempTimer.start(3000); // Simulación cada 3 segundos
+    tempTimer.start(3000); // Actualiza temperatura
 
     qDebug() << "Esclavo Modbus RTU inicializado. Puerto:" << port << ", slaveID:" << slaveId;
     return true;
@@ -65,17 +65,29 @@ bool ModbusSlave::initialize(const QString &port, int slaveId)
 void ModbusSlave::setupRegisters()
 {
     QModbusDataUnitMap regMap;
+
+    // Configuración de holding registers
     QModbusDataUnit hrUnit(QModbusDataUnit::HoldingRegisters, 0, 10);
     regMap.insert(QModbusDataUnit::HoldingRegisters, hrUnit);
+
+    // Configuración de coils
+    QModbusDataUnit coilUnit(QModbusDataUnit::Coils, 0, 10); // Define un rango de 10 coils
+    regMap.insert(QModbusDataUnit::Coils, coilUnit);
 
     if (!server.setMap(regMap)) {
         emit errorOccurred("Error al configurar el mapa de registros en el servidor.");
         return;
     }
 
+    // Valores iniciales para holding registers
     server.setData(QModbusDataUnit::HoldingRegisters, 0, 25); // Temp. inicial
     server.setData(QModbusDataUnit::HoldingRegisters, 1, 0);  // LED apagado
     server.setData(QModbusDataUnit::HoldingRegisters, 2, 0);  // Umbral inicial
+
+    // Valores iniciales para coils
+    server.setData(QModbusDataUnit::Coils, 0, 0); // Coil 0: OFF
+    server.setData(QModbusDataUnit::Coils, 1, 1); // Coil 1: ON
+    server.setData(QModbusDataUnit::Coils, 2, 0); // Coil 2: OFF
 }
 
 void ModbusSlave::setThreshold(quint16 value)

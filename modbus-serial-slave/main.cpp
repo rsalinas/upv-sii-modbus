@@ -7,6 +7,12 @@ int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
 
+#ifdef __linux__
+    system("set -x ; ! killall socat -v; socat -d -d "
+           "pty,raw,echo=0,link=/tmp/modbus-slave "
+           "pty,raw,echo=0,wait-slave,link=/tmp/modbus-master < /dev/null &");
+#endif
+
     qDebug() << "Puertos serie disponibles:";
     const QList<QSerialPortInfo> ports = QSerialPortInfo::availablePorts();
 
@@ -19,7 +25,7 @@ int main(int argc, char *argv[])
             qDebug() << "Sistema operativo local:" << port.systemLocation();
             qDebug() << "---------------------------";
         } else {
-            qDebug() << "Ignored: " << port.systemLocation();
+            //qDebug() << "Ignored: " << port.systemLocation();
         }
     }
 

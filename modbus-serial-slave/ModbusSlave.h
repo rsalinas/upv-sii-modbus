@@ -22,10 +22,13 @@ private:
     QTimer tempTimer;
 
     void setupRegisters();
+    quint16 lastBinaryValue = 0; // Store the last binary value written
+
+    void setThreshold(quint16 value); // Custom function to handle binary register write
 
 signals:
     void errorOccurred(const QString &message);
     void temperatureUpdated(int newTemp);
 };
 
-#endif // MODBUSSLAVE_H#pragma once
+#endif // MODBUSSLAVE_H

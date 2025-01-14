@@ -15,6 +15,14 @@ ModbusSlave::ModbusSlave(QObject *parent)
                     } else {
                         emit errorOccurred("[Esclavo] No se pudo leer el LED del registro 1");
                     }
+                } else if (table == QModbusDataUnit::HoldingRegisters && address == 2 && size == 1) {
+                    quint16 thresholdVal = 0;
+                    if (server.data(QModbusDataUnit::HoldingRegisters, 2, &thresholdVal)) {
+                        setThreshold(thresholdVal);
+                        qDebug() << "[Esclavo] Umbral configurado con valor:" << thresholdVal;
+                    } else {
+                        emit errorOccurred("[Esclavo] No se pudo leer el registro del umbral 2");
+                    }
                 }
             });
 
@@ -67,4 +75,11 @@ void ModbusSlave::setupRegisters()
 
     server.setData(QModbusDataUnit::HoldingRegisters, 0, 25); // Temp. inicial
     server.setData(QModbusDataUnit::HoldingRegisters, 1, 0);  // LED apagado
+    server.setData(QModbusDataUnit::HoldingRegisters, 2, 0);  // Umbral inicial
+}
+
+void ModbusSlave::setThreshold(quint16 value)
+{
+    lastBinaryValue = value; // Store the binary value
+    qDebug() << "[Esclavo] Umbral actualizado a:" << value;
 }

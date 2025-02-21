@@ -20,7 +20,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->labelConnectionStatus->setText("Disconnected");
 
     // Connect the connection status signal from TimeSeriesViewer to update the corresponding control
-    TimeSeriesViewer *viewer = ui->oscilloscopeWidget;
+    TimeSeriesViewer *viewer = ui->seriesWidget;
     connect(viewer, &TimeSeriesViewer::connectionStatusChanged, this, &MainWindow::updateStatusBar);
 
     // Update the poll interval in real-time if changed in the UI
@@ -78,7 +78,7 @@ void MainWindow::onConnectClicked()
         return;
     }
 
-    TimeSeriesViewer *viewer = ui->oscilloscopeWidget;
+    TimeSeriesViewer *viewer = ui->seriesWidget;
     if (viewer->isConnected()) {
         QMessageBox::information(this, tr("Information"), tr("Already connected."));
         return;
@@ -104,7 +104,7 @@ void MainWindow::onConnectClicked()
 
 void MainWindow::onDisconnectClicked()
 {
-    TimeSeriesViewer *viewer = ui->oscilloscopeWidget;
+    TimeSeriesViewer *viewer = ui->seriesWidget;
     if (viewer->isConnected()) {
         viewer->disconnectModbus();
         ui->pushButtonConnect->setEnabled(true);
@@ -120,7 +120,7 @@ void MainWindow::updateStatusBar(const QString &status)
 {
     // Update the connection status in the corresponding control
     ui->labelConnectionStatus->setText(status);
-    TimeSeriesViewer *viewer = ui->oscilloscopeWidget;
+    TimeSeriesViewer *viewer = ui->seriesWidget;
     if (viewer->isConnected()) {
         ui->pushButtonConnect->setEnabled(false);
         ui->pushButtonDisconnect->setEnabled(true);
@@ -136,7 +136,7 @@ void MainWindow::updateStatusBar(const QString &status)
 
 void MainWindow::on_action_Clear_triggered()
 {
-    ui->oscilloscopeWidget->clearData();
+    ui->seriesWidget->clearData();
 }
 
 void MainWindow::on_action_Exit_triggered()

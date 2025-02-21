@@ -15,4 +15,5 @@ SUBDIRS += \
     mqtt-client \
     simpleviewer \
     weather-modbustcp-master-lib \
-    weather-modbustcp-slave
+    weather-modbustcp-slave \
+    p2-simple

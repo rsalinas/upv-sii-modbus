@@ -30,7 +30,7 @@ int main(int argc, char *argv[])
     }
 
     QCommandLineParser parser;
-    parser.setApplicationDescription("Esclavo Modbus RTU");
+    parser.setApplicationDescription("Modbus-TCP Weather station");
     parser.addHelpOption();
 
     QCommandLineOption portOption({"p", "port"},

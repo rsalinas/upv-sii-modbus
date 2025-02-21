@@ -163,7 +163,7 @@
     </item>
     <!-- Oscilloscope widget in the center -->
     <item>
-     <widget class="TimeSeriesViewer" name="oscilloscopeWidget" native="true"/>
+     <widget class="TimeSeriesViewer" name="seriesWidget" native="true"/>
     </item>
     <!-- Statistics panel -->
     <item>

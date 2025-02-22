@@ -4,7 +4,7 @@ SUBDIRS += \
     joystick-lib-test1 \
     joystick-master-lib \
     joystick-modbustcp-slave \
-    learning-graphics1 \
+    learning-graphics1 \   
     modbus-rawserial-master \
     modbus-rawserial-slave \
     modbus-rawtcp-slave \
@@ -15,5 +15,7 @@ SUBDIRS += \
     mqtt-client \
     simpleviewer \
     weather-modbustcp-master-lib \
+    meteo-client \
     weather-modbustcp-slave \
-    p2-simple
+    p2-simple \
+    meteoclient-cli

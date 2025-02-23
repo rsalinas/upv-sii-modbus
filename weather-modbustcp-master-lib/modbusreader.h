@@ -11,7 +11,7 @@ class ModbusReader : public QObject
 {
     Q_OBJECT
 public:
-    explicit ModbusReader(const QString &ipAddress = "localhost",
+    explicit ModbusReader(const QString &ipAddress = "127.0.0.1",
                           int port = 1502,
                           int deviceAddress = 1,
                           QObject *parent = nullptr);

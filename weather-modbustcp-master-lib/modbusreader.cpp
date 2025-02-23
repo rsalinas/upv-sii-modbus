@@ -92,9 +92,7 @@ QVector<quint16> ModbusReader::getInputRegisters(int count, int first)
     }
     QEventLoop loop;
     connect(reply, &QModbusReply::finished, &loop, &QEventLoop::quit);
-    qDebug() << "Entrando en loop.exec()";
     loop.exec();
-    qDebug() << "Fin del loop";
     if (reply->error() == QModbusDevice::NoError) {
         const QModbusDataUnit unit = reply->result();
         registers.resize(unit.valueCount());
@@ -102,10 +100,10 @@ QVector<quint16> ModbusReader::getInputRegisters(int count, int first)
             registers[i] = unit.value(i);
         }
     } else {
-        qWarning() << "Error en la respuesta Modbus:" << reply->errorString();
+
+        qWarning() << "Error en la respuesta Modbus:" << reply->errorString() << " err=="<<reply->error();
     }
     reply->deleteLater();
-    qDebug() << "Devolviendo" << registers.size() << "valores";
     return registers;
 }
 
@@ -129,7 +127,7 @@ QBitArray ModbusReader::getDiscreteCoils(int count, int first)
             coils.setBit(i, unit.value(i) != 0);
         }
     } else {
-        qWarning() << "Error en la respuesta Modbus:" << reply->errorString();
+        qWarning() << "Error en la respuesta Modbus:" << reply->errorString() << " err=="<<reply->error();
     }
     reply->deleteLater();
     return coils;

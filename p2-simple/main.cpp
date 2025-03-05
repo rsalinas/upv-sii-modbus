@@ -1,6 +1,10 @@
 #include <QApplication>
+#include <QCheckBox>
 #include <QDebug>
+#include <QHBoxLayout>
 #include <QTimer>
+#include <QVBoxLayout>
+#include <QWidget>
 #include <QtCharts/QChartView>
 #include <QtCharts/QLineSeries>
 #include <QtCharts/QValueAxis>
@@ -63,8 +67,53 @@ int main(int argc, char *argv[])
     // ChartView
     QChartView *chartView = new QChartView(chart);
     chartView->setRenderHint(QPainter::Antialiasing);
-    chartView->resize(800, 600);
-    chartView->show();
+
+    // Crear widget principal y layout
+    QWidget *mainWidget = new QWidget;
+    QVBoxLayout *mainLayout = new QVBoxLayout(mainWidget);
+    mainLayout->addWidget(chartView);
+
+    // Línea inferior con 2 CheckBox
+    QWidget *checkBoxWidget = new QWidget;
+    QHBoxLayout *checkBoxLayout = new QHBoxLayout(checkBoxWidget);
+    QCheckBox *checkBoxPresion = new QCheckBox("Dibujar línea de Presión");
+    QCheckBox *checkBoxTemperatura = new QCheckBox("Dibujar línea de Temperatura");
+
+    // Ambos activados inicialmente
+    checkBoxPresion->setChecked(true);
+    checkBoxTemperatura->setChecked(true);
+    checkBoxLayout->addWidget(checkBoxPresion);
+    checkBoxLayout->addWidget(checkBoxTemperatura);
+    checkBoxLayout->addStretch();
+
+    mainLayout->addWidget(checkBoxWidget);
+
+    // Establecer título de la ventana
+    mainWidget->setWindowTitle("SII - Práctica 2");
+    mainWidget->resize(800, 600);
+    mainWidget->show();
+
+    // Conectar checkboxes para controlar la visibilidad de las series
+    QObject::connect(checkBoxPresion, &QCheckBox::toggled, [&](bool checked) {
+        // Evitar que ambas se desactiven
+        if (!checked && !checkBoxTemperatura->isChecked()) {
+            checkBoxPresion->blockSignals(true);
+            checkBoxPresion->setChecked(true);
+            checkBoxPresion->blockSignals(false);
+            return;
+        }
+        seriePresion->setVisible(checked);
+    });
+
+    QObject::connect(checkBoxTemperatura, &QCheckBox::toggled, [&](bool checked) {
+        if (!checked && !checkBoxPresion->isChecked()) {
+            checkBoxTemperatura->blockSignals(true);
+            checkBoxTemperatura->setChecked(true);
+            checkBoxTemperatura->blockSignals(false);
+            return;
+        }
+        serieTemperatura->setVisible(checked);
+    });
 
     // Timer
     QTimer timer;

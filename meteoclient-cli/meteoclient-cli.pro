@@ -14,15 +14,10 @@ qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
-win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../meteo-client/release/ -lmeteo-client
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../meteo-client/debug/ -lmeteo-client
-else:unix: LIBS += -L$$OUT_PWD/../meteo-client/ -lmeteo-client
 
-INCLUDEPATH += $$PWD/../meteo-client
-DEPENDPATH += $$PWD/../meteo-client
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/3rdparty/meteoclient/release/ -lmeteo-client
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/3rdparty/meteoclient/debug/ -lmeteo-client
+else:unix: LIBS += -L$$PWD/3rdparty/meteoclient/ -lmeteo-client
 
-win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../meteo-client/release/libmeteo-client.a
-else:win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../meteo-client/debug/libmeteo-client.a
-else:win32:!win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../meteo-client/release/meteo-client.lib
-else:win32:!win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../meteo-client/debug/meteo-client.lib
-else:unix: PRE_TARGETDEPS += $$OUT_PWD/../meteo-client/libmeteo-client.a
+INCLUDEPATH += $$PWD/3rdparty/meteoclient
+DEPENDPATH += $$PWD/3rdparty/meteoclient

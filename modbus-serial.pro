@@ -17,5 +17,7 @@ SUBDIRS += \
     weather-modbustcp-master-lib \
     meteo-client \
     weather-modbustcp-slave \
-    p2-simple \
-    meteoclient-cli
+    p2-ejemplo \
+
+
+#    p2-simple \     meteoclient-cli

@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QModbusTcpServer>
 #include <QTreeWidgetItem>
+#include "qpushbutton.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -26,6 +27,10 @@ private slots:
     void on_editTemperature_editingFinished();
     void on_buttonDiscrete_pressed();
     void on_buttonDiscrete_released();
+    void on_buttonDiscrete2_pressed();
+    void on_buttonDiscrete2_released();
+    void updateLEDs();
+    void onCoilsChanged(); 
 
     void on_action_About_triggered();
     void on_action_Exit_triggered();
@@ -39,6 +44,11 @@ private:
     QTreeWidgetItem *treeInputRegistersItem;
     QModbusDataUnit dataUnitInputRegisters;
     QModbusDataUnit dataUnitDiscreteInputs;
+    QFrame *ledRed;
+    QFrame *ledBlue;
+    QFrame *ledGreen;
+    QPushButton *buttonDiscrete2;
+    QModbusDataUnit dataUnitCoils;
 };
 
 #endif // MAINWINDOW_H

@@ -15,8 +15,21 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
     , dataUnitInputRegisters(QModbusDataUnit::InputRegisters, 0, 2)
     , dataUnitDiscreteInputs(QModbusDataUnit::DiscreteInputs, 0, 1)
+    , dataUnitCoils(QModbusDataUnit::Coils, 0, 3) // Coils para los LEDs
 {
     ui->setupUi(this);
+
+    // Inicializar los LEDs
+    ledRed = ui->ledRed;
+    ledBlue = ui->ledBlue;
+    ledGreen = ui->ledGreen;
+
+    // Inicializar el segundo botón
+    buttonDiscrete2 = ui->buttonDiscrete2;
+
+    // Conectar señales y slots para el segundo botón
+    connect(buttonDiscrete2, &QPushButton::pressed, this, &MainWindow::on_buttonDiscrete2_pressed);
+    connect(buttonDiscrete2, &QPushButton::released, this, &MainWindow::on_buttonDiscrete2_released);
 
     // Declarar la dirección del dispositivo para usar en varios bloques
     const int deviceAddress = 1;
@@ -44,6 +57,19 @@ MainWindow::MainWindow(QWidget *parent)
         registerTemperature->setText(0, "1 (Temperatura)");
         registerTemperature->setText(1, "0");
 
+        // Configurar coils para los LEDs
+        QTreeWidgetItem *treeCoilsItem = new QTreeWidgetItem(ui->treeWidgetModbus);
+        treeCoilsItem->setText(0, "Coils");
+        QTreeWidgetItem *coilRed = new QTreeWidgetItem(treeCoilsItem);
+        coilRed->setText(0, "0 (Rojo)");
+        coilRed->setText(1, "0");
+        QTreeWidgetItem *coilBlue = new QTreeWidgetItem(treeCoilsItem);
+        coilBlue->setText(0, "1 (Azul)");
+        coilBlue->setText(1, "0");
+        QTreeWidgetItem *coilGreen = new QTreeWidgetItem(treeCoilsItem);
+        coilGreen->setText(0, "2 (Verde)");
+        coilGreen->setText(1, "0");
+
         ui->treeWidgetModbus->header()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
         ui->treeWidgetModbus->header()->setSectionResizeMode(1, QHeaderView::ResizeToContents);
         ui->treeWidgetModbus->expandAll();
@@ -55,12 +81,12 @@ MainWindow::MainWindow(QWidget *parent)
             QMessageBox::critical(this, "Error", "No se pudo crear el servidor Modbus.");
             return;
         }
+
         // Configurar el mapeo de datos Modbus
         QMap<QModbusDataUnit::RegisterType, QModbusDataUnit> dataMap;
-        dataUnitInputRegisters.setValue(0, 1);
-        dataUnitInputRegisters.setValue(1, 2);
         dataMap.insert(QModbusDataUnit::InputRegisters, dataUnitInputRegisters);
         dataMap.insert(QModbusDataUnit::DiscreteInputs, dataUnitDiscreteInputs);
+        dataMap.insert(QModbusDataUnit::Coils, dataUnitCoils);
         modbusServer->setMap(dataMap);
 
         modbusServer->setServerAddress(deviceAddress);
@@ -94,12 +120,22 @@ MainWindow::MainWindow(QWidget *parent)
 
         // Actualizar el árbol con los valores iniciales
         treeInputRegistersItem->child(0)->setText(1, QString::number(ui->sliderPressure->value()));
-        treeInputRegistersItem->child(1)->setText(1, QString::number(ui->sliderTemperature->value()));
+        treeInputRegistersItem->child(1)->setText(1,
+                                                  QString::number(ui->sliderTemperature->value()));
     }
 
     { // 4. Conectar señales y configurar la barra de estado
-        connect(ui->buttonDiscrete, &QPushButton::pressed, this, &MainWindow::on_buttonDiscrete_pressed);
-        connect(ui->buttonDiscrete, &QPushButton::released, this, &MainWindow::on_buttonDiscrete_released);
+        connect(ui->buttonDiscrete,
+                &QPushButton::pressed,
+                this,
+                &MainWindow::on_buttonDiscrete_pressed);
+        connect(ui->buttonDiscrete,
+                &QPushButton::released,
+                this,
+                &MainWindow::on_buttonDiscrete_released);
+
+        // Conectar la señal de cambio de datos Modbus
+        connect(modbusServer, &QModbusTcpServer::dataWritten, this, &MainWindow::onCoilsChanged);
 
         { // Mostrar información de red en la barra de estado
             QStringList ips;
@@ -108,7 +144,8 @@ MainWindow::MainWindow(QWidget *parent)
                 if (address.protocol() == QAbstractSocket::IPv4Protocol && !address.isLoopback())
                     ips << address.toString();
             }
-            const int port = modbusServer->connectionParameter(QModbusDevice::NetworkPortParameter).toInt();
+            const int port = modbusServer->connectionParameter(QModbusDevice::NetworkPortParameter)
+                                 .toInt();
             auto msg = QString("Port: %2 | Addr: %3 | IPs: %1")
                            .arg(ips.join(", "))
                            .arg(port)
@@ -117,7 +154,6 @@ MainWindow::MainWindow(QWidget *parent)
         }
     }
 }
-
 
 MainWindow::~MainWindow()
 {
@@ -227,4 +263,53 @@ void MainWindow::on_action_About_triggered()
 void MainWindow::on_action_Exit_triggered()
 {
     QApplication::exit(0);
+}
+
+void MainWindow::onCoilsChanged()
+{
+    // Actualizar los LEDs cuando cambien los valores de los coils
+    updateLEDs();
+}
+
+
+void MainWindow::on_buttonDiscrete2_pressed()
+{
+    dataUnitDiscreteInputs.setValue(1, 1);
+
+    QTreeWidgetItem *item = treeDiscreteInputItem->child(1);
+    if (item) {
+        item->setText(1, "1");
+    }
+
+    if (modbusServer->setData(dataUnitDiscreteInputs)) {
+        //
+    } else {
+        qDebug() << "modbus error";
+    }
+}
+
+void MainWindow::on_buttonDiscrete2_released()
+{
+    dataUnitDiscreteInputs.setValue(1, 0);
+
+    QTreeWidgetItem *item = treeDiscreteInputItem->child(1);
+    if (item) {
+        item->setText(1, "0");
+    }
+    if (modbusServer->setData(dataUnitDiscreteInputs)) {
+        //
+    } else {
+        qDebug() << "modbus error";
+    }
+}
+
+void MainWindow::updateLEDs()
+{
+    // Actualizar el estado de los LEDs basado en los valores de los coils
+    ledRed->setStyleSheet(dataUnitCoils.value(0) ? "background-color: red;"
+                                                 : "background-color: black;");
+    ledBlue->setStyleSheet(dataUnitCoils.value(1) ? "background-color: blue;"
+                                                  : "background-color: black;");
+    ledGreen->setStyleSheet(dataUnitCoils.value(2) ? "background-color: green;"
+                                                   : "background-color: black;");
 }

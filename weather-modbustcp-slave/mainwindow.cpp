@@ -13,9 +13,9 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
-    , dataUnitInputRegisters(QModbusDataUnit::InputRegisters, 0, 2)
-    , dataUnitDiscreteInputs(QModbusDataUnit::DiscreteInputs, 0, 1)
-    , dataUnitCoils(QModbusDataUnit::Coils, 0, 3) // Coils para los LEDs
+    , dataUnitInputRegisters(QModbusDataUnit::InputRegisters, 0, 2) // Registros pressure,temp
+    , dataUnitDiscreteInputs(QModbusDataUnit::DiscreteInputs, 0, 2) // Botones
+    , dataUnitCoils(QModbusDataUnit::Coils, 0, 3)                   // Coils para los LEDs
 {
     ui->setupUi(this);
 
@@ -45,6 +45,9 @@ MainWindow::MainWindow(QWidget *parent)
         QTreeWidgetItem *discreteItem = new QTreeWidgetItem(treeDiscreteInputItem);
         discreteItem->setText(0, "0");
         discreteItem->setText(1, "0"); // Valor inicial
+        QTreeWidgetItem *discreteItem1 = new QTreeWidgetItem(treeDiscreteInputItem);
+        discreteItem1->setText(0, "1");
+        discreteItem1->setText(1, "1"); // Valor inicial
 
         // Configurar registros de entrada
         treeInputRegistersItem = new QTreeWidgetItem(ui->treeWidgetModbus);
@@ -267,10 +270,33 @@ void MainWindow::on_action_Exit_triggered()
 
 void MainWindow::onCoilsChanged()
 {
-    // Actualizar los LEDs cuando cambien los valores de los coils
-    updateLEDs();
-}
+    // Leer los valores de los coils uno por uno
+    for (int i = 0; i < 3; ++i) {
+        quint16 value;
+        if (modbusServer->data(QModbusDataUnit::Coils, i, &value)) {
+            dataUnitCoils.setValue(i, value); // Actualizar el valor en dataUnitCoils
 
+            // Actualizar el valor en el árbol Modbus
+            QTreeWidgetItem *coilItem = ui->treeWidgetModbus->topLevelItem(2)->child(
+                i); // Coils están en el índice 2
+            if (coilItem) {
+                coilItem->setText(1, QString::number(value)); // Actualizar el valor en la columna 1
+            } else {
+                qDebug() << "No se encontró el ítem del coil" << i;
+            }
+        } else {
+            qDebug() << "Error al leer el coil" << i;
+        }
+    }
+
+    // Actualizar los LEDs
+    updateLEDs();
+
+    // Depuración: Imprimir los valores de los coils
+    qDebug() << "Coils actualizados:"
+             << "Rojo:" << dataUnitCoils.value(0) << "Azul:" << dataUnitCoils.value(1)
+             << "Verde:" << dataUnitCoils.value(2);
+}
 
 void MainWindow::on_buttonDiscrete2_pressed()
 {
@@ -305,11 +331,18 @@ void MainWindow::on_buttonDiscrete2_released()
 
 void MainWindow::updateLEDs()
 {
-    // Actualizar el estado de los LEDs basado en los valores de los coils
-    ledRed->setStyleSheet(dataUnitCoils.value(0) ? "background-color: red;"
-                                                 : "background-color: black;");
-    ledBlue->setStyleSheet(dataUnitCoils.value(1) ? "background-color: blue;"
-                                                  : "background-color: black;");
-    ledGreen->setStyleSheet(dataUnitCoils.value(2) ? "background-color: green;"
-                                                   : "background-color: black;");
+    // Obtener los valores de los coils
+    bool redOn = dataUnitCoils.value(0);
+    bool blueOn = dataUnitCoils.value(1);
+    bool greenOn = dataUnitCoils.value(2);
+
+    // Actualizar el color de los paneles
+    ledRed->setStyleSheet(redOn ? "background-color: rgb(255, 0, 0);" : "background-color: black;");
+    ledBlue->setStyleSheet(blueOn ? "background-color: rgb(0, 0, 255);"
+                                  : "background-color: black;");
+    ledGreen->setStyleSheet(greenOn ? "background-color: rgb(0, 255, 0);"
+                                    : "background-color: black;");
+
+    qDebug() << "LEDs actualizados:"
+             << "Rojo:" << redOn << "Azul:" << blueOn << "Verde:" << greenOn;
 }

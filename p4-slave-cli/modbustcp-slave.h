@@ -31,6 +31,7 @@ private:
 
     void processReadCoilsRequest(QDataStream &stream, QDataStream &responseStream);
     void processReadDiscreteInputsRequest(QDataStream &stream, QDataStream &responseStream);
+    void processReadInputRegistersRequest(QDataStream &stream, QDataStream &responseStream);
+    void processWriteMultipleCoilsRequest(QDataStream &stream, QDataStream &responseStream);
 };
-
 #endif // MODBUSTCPSLAVE_H

@@ -125,6 +125,42 @@ void ModbusTcpSlave::processReadDiscreteInputsRequest(QDataStream &stream,
     }
 }
 
+void ModbusTcpSlave::processReadInputRegistersRequest(QDataStream &stream,
+                                                      QDataStream &responseStream)
+{
+    quint16 startAddress, registerCount;
+    stream >> startAddress >> registerCount;
+
+    qDebug() << "Read Input Registers - Start Address:" << startAddress
+             << "Register Count:" << registerCount;
+
+    responseStream << quint8(registerCount * 2); // Byte count is 2 bytes per register
+    for (int i = 0; i < registerCount; ++i) {
+        responseStream << inputRegisters[startAddress + i];
+    }
+}
+
+void ModbusTcpSlave::processWriteMultipleCoilsRequest(QDataStream &stream,
+                                                      QDataStream &responseStream)
+{
+    quint16 startAddress, coilCount;
+    quint8 byteCount;
+    stream >> startAddress >> coilCount >> byteCount;
+
+    qDebug() << "Write Multiple Coils - Start Address:" << startAddress
+             << "Coil Count:" << coilCount << "Byte Count:" << byteCount;
+
+    quint8 data;
+    for (int i = 0; i < coilCount; ++i) {
+        if (i % 8 == 0) {
+            stream >> data;
+        }
+        coils[startAddress + i] = (data & (1 << (i % 8))) != 0;
+    }
+
+    responseStream << startAddress << coilCount;
+}
+
 QByteArray ModbusTcpSlave::createResponse(const QByteArray &request)
 {
     QDataStream stream(request);
@@ -156,43 +192,12 @@ QByteArray ModbusTcpSlave::createResponse(const QByteArray &request)
     case 0x02: // Read Discrete Inputs
         processReadDiscreteInputsRequest(stream, responseStream);
         break;
-
     case 0x04: // Read Input Registers
-    {
-        // [00][01][00][00][00][06] [01] [04][00][00][00][02]
-        // <00><01><00><00><00><07> <01> <04> <04> <03><F5><00><19>
-
-        quint16 startAddress, registerCount;
-        stream >> startAddress >> registerCount;
-
-        qDebug() << "Read Input Registers - Start Address:" << startAddress
-                 << "Register Count:" << registerCount;
-        responseStream << quint8(registerCount * 2);
-        for (int i = 0; i < registerCount; ++i) {
-            responseStream << inputRegisters[startAddress + i];
-        }
+        processReadInputRegistersRequest(stream, responseStream);
         break;
-    }
     case 0x0F: // Write Multiple Coils
-    {
-        quint16 startAddress, coilCount;
-        quint8 byteCount;
-        stream >> startAddress >> coilCount >> byteCount;
-
-        qDebug() << "Write Multiple Coils - Start Address:" << startAddress
-                 << "Coil Count:" << coilCount << "Byte Count:" << byteCount;
-
-        quint8 data;
-        for (int i = 0; i < coilCount; ++i) {
-            if (i % 8 == 0) {
-                stream >> data;
-            }
-            coils[startAddress + i] = (data & (1 << (i % 8))) != 0;
-        }
-
-        responseStream << startAddress << coilCount;
+        processWriteMultipleCoilsRequest(stream, responseStream);
         break;
-    }
     default:
         qWarning() << "Función no soportada. Código de función:" << functionCode;
         responseStream << quint8(functionCode | 0x80)
@@ -202,9 +207,10 @@ QByteArray ModbusTcpSlave::createResponse(const QByteArray &request)
 
     // Actualizar la longitud de la respuesta
     quint16 responseLength = response.size() - 6; // Almacena el valor en una variable
-    response.replace(1 + 4,
+    response.replace(1+4,
                      2,
                      QByteArray::fromRawData(reinterpret_cast<const char *>(&responseLength), 2));
+
     qDebug() << "Respuesta final (hex):" << response.toHex();
     return response;
 }

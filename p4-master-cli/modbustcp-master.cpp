@@ -154,8 +154,8 @@ bool ModbusTcpClient::sendRequest(const QByteArray &pdu, QByteArray &responsePdu
     // Se lee el encabezado de la respuesta (debe tener 7 bytes).
     while (header.size() < 7) {
         if (!socket->waitForReadyRead(timeout)) {
-            qCritical() << "Tiempo de espera agotado al esperar el encabezado. timeout=="
-                        << timeout;
+            qCritical() << "Tiempo de espera agotado al esperar el encabezado. timeout==" << timeout
+                        << "sz==" << header.size();
             return false;
         }
         header.append(socket->read(7 - header.size()));
@@ -167,6 +167,7 @@ bool ModbusTcpClient::sendRequest(const QByteArray &pdu, QByteArray &responsePdu
     quint16 respTransactionId, protocolId, respLength;
     quint8 unitId;
     headerStream >> respTransactionId >> protocolId >> respLength >> unitId;
+    qDebug() << "Header recibido: " << header.toHex() << "respLength==" << respLength;
 
     // Se verifica que el ID de transacción de la respuesta coincida con el enviado.
     if (respTransactionId != transactionId) {
@@ -183,7 +184,8 @@ bool ModbusTcpClient::sendRequest(const QByteArray &pdu, QByteArray &responsePdu
     while (responseBuffer.size() < remaining) {
         if (socket->bytesAvailable() == 0 && !socket->waitForReadyRead(timeout)) {
             qCritical() << "Tiempo de espera agotado al esperar la respuesta completa. timeout=="
-                        << timeout;
+                        << timeout << "rb.size==" << responseBuffer.size()
+                        << " remaining==" << remaining;
             return false;
         }
         responseBuffer.append(socket->read(remaining - responseBuffer.size()));
@@ -247,6 +249,45 @@ bool ModbusTcpClient::writeCoils(quint16 address, const QVector<bool> &values)
         qCritical() << "Respuesta inesperada para writeCoils.";
         return false;
     }
+
+    return true;
+}
+
+bool ModbusTcpClient::readCoils(quint16 startAddress, quint16 count, QVector<bool> &values)
+{
+    // Código de función Modbus para leer bobinas.
+    const quint8 FUNCTION_CODE = 0x01;
+
+    // Se prepara el PDU con la información de la solicitud.
+    QByteArray pdu;
+    QDataStream pduStream(&pdu, QIODevice::WriteOnly);
+    pduStream.setByteOrder(QDataStream::BigEndian);
+
+    // Se escribe el código de función, la dirección inicial y el número de bobinas.
+    pduStream << FUNCTION_CODE << startAddress << count;
+
+    // Se envía la solicitud y se espera la respuesta.
+    QByteArray responsePDU;
+    if (!sendRequest(pdu, responsePDU)) {
+        return false;
+    }
+
+    // Se procesa la respuesta recibida.
+    QDataStream respStream(responsePDU);
+    respStream.setByteOrder(QDataStream::BigEndian);
+
+    quint8 responseFunctionCode;
+    quint8 byteCount;
+
+    respStream >> responseFunctionCode >> byteCount;
+
+    // Se comprueba que la respuesta coincida con la solicitud enviada.
+    if (responseFunctionCode != FUNCTION_CODE) {
+        qCritical() << "Respuesta inesperada para readCoils.";
+        return false;
+    }
+
+    values = unpackModbusBits(respStream, count);
 
     return true;
 }

@@ -61,11 +61,6 @@ int main(int argc, char *argv[])
             if (!modbus.writeCoils(0, QVector<bool>() << toggle << toggle << toggle)) {
                 qDebug() << "Error al escribir en las bobinas";
             }
-
-            QVector<bool> values;
-            if (modbus.readCoils(0, 3, values)) {
-                qDebug() << toggle << ": " << values;
-            }
             // Se alterna el valor para la siguiente escritura.
             toggle = !toggle;
         }

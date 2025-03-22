@@ -1,7 +1,6 @@
 TEMPLATE = subdirs
 
 SUBDIRS += \
-    joystick-lib-test1 \
     joystick-master-lib \
     joystick-modbustcp-slave \
     learning-graphics1 \
@@ -18,7 +17,8 @@ SUBDIRS += \
     weather-modbustcp-master-lib \
     meteo-client \
     weather-modbustcp-slave \
-    p2-ejemplo
+    p4-master-cli-alu \
+    p4-slave-cli
 
 
-#    p2-simple \     meteoclient-cli
+#    p2-simple \     meteoclient-cli joystick-lib-test1 \ p2-ejemplo \

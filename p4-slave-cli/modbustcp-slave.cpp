@@ -3,15 +3,7 @@
 ModbusTcpSlave::ModbusTcpSlave(QObject *parent)
     : QTcpServer(parent)
 {
-    // Inicializar datos simulados
-    coils = QVector<bool>(3, false);
-    discreteInputs = QVector<bool>(2, true);
-    inputRegisters = QVector<quint16>() << 1024 << 25;
-
-    qDebug() << "Datos simulados inicializados:";
-    qDebug() << "Coils:" << coils;
-    qDebug() << "Discrete Inputs:" << discreteInputs;
-    qDebug() << "Input Registers:" << inputRegisters;
+    // La inicialización de los datos se ha movido al main
 }
 
 bool ModbusTcpSlave::listen(const QHostAddress &address, quint16 port)
@@ -155,7 +147,7 @@ void ModbusTcpSlave::processWriteMultipleCoilsRequest(QDataStream &stream,
         if (i % 8 == 0) {
             stream >> data;
         }
-        coils[startAddress + i] = (data & (1 << (i % 8))) != 0;
+        updateCoil(startAddress + i, (data & (1 << (i % 8))) != 0);
     }
 
     responseStream << startAddress << coilCount;
@@ -207,10 +199,48 @@ QByteArray ModbusTcpSlave::createResponse(const QByteArray &request)
 
     // Actualizar la longitud de la respuesta
     quint16 responseLength = response.size() - 6; // Almacena el valor en una variable
-    response.replace(1+4,
+    response.replace(1 + 4,
                      2,
                      QByteArray::fromRawData(reinterpret_cast<const char *>(&responseLength), 2));
 
     qDebug() << "Respuesta final (hex):" << response.toHex();
     return response;
+}
+
+void ModbusTcpSlave::setCoils(const QVector<bool> &newCoils)
+{
+    coils = newCoils;
+}
+
+QVector<bool> ModbusTcpSlave::getCoils() const
+{
+    return coils;
+}
+
+void ModbusTcpSlave::setDiscreteInputs(const QVector<bool> &newDiscreteInputs)
+{
+    discreteInputs = newDiscreteInputs;
+}
+
+QVector<bool> ModbusTcpSlave::getDiscreteInputs() const
+{
+    return discreteInputs;
+}
+
+void ModbusTcpSlave::setInputRegisters(const QVector<quint16> &newInputRegisters)
+{
+    inputRegisters = newInputRegisters;
+}
+
+QVector<quint16> ModbusTcpSlave::getInputRegisters() const
+{
+    return inputRegisters;
+}
+
+void ModbusTcpSlave::updateCoil(int index, bool value)
+{
+    if (coils[index] != value) {
+        coils[index] = value;
+        emit coilChanged(index, value);
+    }
 }

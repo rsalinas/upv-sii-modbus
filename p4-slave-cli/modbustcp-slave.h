@@ -16,16 +16,24 @@ public:
     // Métodos para modificar y obtener los datos simulados desde fuera
     void setCoils(const QVector<bool> &newCoils);
     QVector<bool> getCoils() const;
+    void setCoil(int index, bool value); // Cambiar una coil individual
+    bool getCoil(int index) const;       // Obtener una coil individual
 
     void setDiscreteInputs(const QVector<bool> &newDiscreteInputs);
     QVector<bool> getDiscreteInputs() const;
+    void setDiscreteInput(int index, bool value); // Cambiar una entrada discreta individual
+    bool getDiscreteInput(int index) const;       // Obtener una entrada discreta individual
 
     void setInputRegisters(const QVector<quint16> &newInputRegisters);
     QVector<quint16> getInputRegisters() const;
+    void setInputRegister(int index, quint16 value); // Cambiar un registro de entrada individual
+    quint16 getInputRegister(int index) const;       // Obtener un registro de entrada individual
 
 signals:
-    // Señal emitida cuando una coil cambia de valor
+    // Señales emitidas cuando cambian los valores
     void coilChanged(int index, bool value);
+    void discreteInputChanged(int index, bool value);
+    void inputRegisterChanged(int index, quint16 value);
 
 protected:
     void incomingConnection(qintptr socketDescriptor) override;
@@ -48,8 +56,10 @@ private:
     void processReadInputRegistersRequest(QDataStream &stream, QDataStream &responseStream);
     void processWriteMultipleCoilsRequest(QDataStream &stream, QDataStream &responseStream);
 
-    // Método para actualizar una coil y emitir la señal si es necesario
+    // Métodos para actualizar valores y emitir señales
     void updateCoil(int index, bool value);
+    void updateDiscreteInput(int index, bool value);
+    void updateInputRegister(int index, quint16 value);
 };
 
 #endif // MODBUSTCPSLAVE_H

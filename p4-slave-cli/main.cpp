@@ -23,10 +23,23 @@ int main(int argc, char *argv[])
     qDebug() << "Discrete Inputs:" << slave.getDiscreteInputs();
     qDebug() << "Input Registers:" << slave.getInputRegisters();
 
-    // Conectar la señal de cambio de coil a un slot de ejemplo
+    // Conectar las señales de cambio a slots de ejemplo
     QObject::connect(&slave, &ModbusTcpSlave::coilChanged, [](int index, bool value) {
         qDebug() << "Coil" << index << "cambió a" << value;
     });
+
+    QObject::connect(&slave, &ModbusTcpSlave::discreteInputChanged, [](int index, bool value) {
+        qDebug() << "Discrete Input" << index << "cambió a" << value;
+    });
+
+    QObject::connect(&slave, &ModbusTcpSlave::inputRegisterChanged, [](int index, quint16 value) {
+        qDebug() << "Input Register" << index << "cambió a" << value;
+    });
+
+    // Modificar valores individuales
+    slave.setCoil(0, true);           // Cambiar la coil 0 a true
+    slave.setDiscreteInput(1, false); // Cambiar la entrada discreta 1 a false
+    slave.setInputRegister(0, 2048);  // Cambiar el registro de entrada 0 a 2048
 
     // Iniciar el servidor Modbus TCP
     if (!slave.listen(QHostAddress::Any, 1502)) {

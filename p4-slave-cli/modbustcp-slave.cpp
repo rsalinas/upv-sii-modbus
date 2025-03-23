@@ -6,6 +6,118 @@ ModbusTcpSlave::ModbusTcpSlave(QObject *parent)
     // La inicialización de los datos se ha movido al main
 }
 
+// Métodos para coils
+void ModbusTcpSlave::setCoils(const QVector<bool> &newCoils)
+{
+    coils = newCoils;
+}
+
+QVector<bool> ModbusTcpSlave::getCoils() const
+{
+    return coils;
+}
+
+void ModbusTcpSlave::setCoil(int index, bool value)
+{
+    if (index >= 0 && index < coils.size()) {
+        updateCoil(index, value);
+    } else {
+        qWarning() << "Índice de coil fuera de rango:" << index;
+    }
+}
+
+bool ModbusTcpSlave::getCoil(int index) const
+{
+    if (index >= 0 && index < coils.size()) {
+        return coils[index];
+    }
+    qWarning() << "Índice de coil fuera de rango:" << index;
+    return false;
+}
+
+// Métodos para discreteInputs
+void ModbusTcpSlave::setDiscreteInputs(const QVector<bool> &newDiscreteInputs)
+{
+    discreteInputs = newDiscreteInputs;
+}
+
+QVector<bool> ModbusTcpSlave::getDiscreteInputs() const
+{
+    return discreteInputs;
+}
+
+void ModbusTcpSlave::setDiscreteInput(int index, bool value)
+{
+    if (index >= 0 && index < discreteInputs.size()) {
+        updateDiscreteInput(index, value);
+    } else {
+        qWarning() << "Índice de entrada discreta fuera de rango:" << index;
+    }
+}
+
+bool ModbusTcpSlave::getDiscreteInput(int index) const
+{
+    if (index >= 0 && index < discreteInputs.size()) {
+        return discreteInputs[index];
+    }
+    qWarning() << "Índice de entrada discreta fuera de rango:" << index;
+    return false;
+}
+
+// Métodos para inputRegisters
+void ModbusTcpSlave::setInputRegisters(const QVector<quint16> &newInputRegisters)
+{
+    inputRegisters = newInputRegisters;
+}
+
+QVector<quint16> ModbusTcpSlave::getInputRegisters() const
+{
+    return inputRegisters;
+}
+
+void ModbusTcpSlave::setInputRegister(int index, quint16 value)
+{
+    if (index >= 0 && index < inputRegisters.size()) {
+        updateInputRegister(index, value);
+    } else {
+        qWarning() << "Índice de registro de entrada fuera de rango:" << index;
+    }
+}
+
+quint16 ModbusTcpSlave::getInputRegister(int index) const
+{
+    if (index >= 0 && index < inputRegisters.size()) {
+        return inputRegisters[index];
+    }
+    qWarning() << "Índice de registro de entrada fuera de rango:" << index;
+    return 0;
+}
+
+// Métodos para actualizar valores y emitir señales
+void ModbusTcpSlave::updateCoil(int index, bool value)
+{
+    if (coils[index] != value) {
+        coils[index] = value;
+        emit coilChanged(index, value);
+    }
+}
+
+void ModbusTcpSlave::updateDiscreteInput(int index, bool value)
+{
+    if (discreteInputs[index] != value) {
+        discreteInputs[index] = value;
+        emit discreteInputChanged(index, value);
+    }
+}
+
+void ModbusTcpSlave::updateInputRegister(int index, quint16 value)
+{
+    if (inputRegisters[index] != value) {
+        inputRegisters[index] = value;
+        emit inputRegisterChanged(index, value);
+    }
+}
+
 bool ModbusTcpSlave::listen(const QHostAddress &address, quint16 port)
 {
     qDebug() << "Intentando iniciar servidor Modbus TCP en" << address << "puerto" << port;
@@ -205,42 +317,4 @@ QByteArray ModbusTcpSlave::createResponse(const QByteArray &request)
 
     qDebug() << "Respuesta final (hex):" << response.toHex();
     return response;
-}
-
-void ModbusTcpSlave::setCoils(const QVector<bool> &newCoils)
-{
-    coils = newCoils;
-}
-
-QVector<bool> ModbusTcpSlave::getCoils() const
-{
-    return coils;
-}
-
-void ModbusTcpSlave::setDiscreteInputs(const QVector<bool> &newDiscreteInputs)
-{
-    discreteInputs = newDiscreteInputs;
-}
-
-QVector<bool> ModbusTcpSlave::getDiscreteInputs() const
-{
-    return discreteInputs;
-}
-
-void ModbusTcpSlave::setInputRegisters(const QVector<quint16> &newInputRegisters)
-{
-    inputRegisters = newInputRegisters;
-}
-
-QVector<quint16> ModbusTcpSlave::getInputRegisters() const
-{
-    return inputRegisters;
-}
-
-void ModbusTcpSlave::updateCoil(int index, bool value)
-{
-    if (coils[index] != value) {
-        coils[index] = value;
-        emit coilChanged(index, value);
-    }
 }

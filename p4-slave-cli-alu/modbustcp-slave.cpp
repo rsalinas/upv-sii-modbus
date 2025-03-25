@@ -230,43 +230,6 @@ void ModbusTcpSlave::processReadDiscreteInputsRequest(QDataStream &stream,
 }
 
 
-#ifndef STUDENT_VERSION
-void ModbusTcpSlave::processReadInputRegistersRequest(QDataStream &stream,
-                                                      QDataStream &responseStream)
-{
-    quint16 startAddress, registerCount;
-    stream >> startAddress >> registerCount;
-
-    qDebug() << "Read Input Registers - Start Address:" << startAddress
-             << "Register Count:" << registerCount;
-
-    responseStream << quint8(registerCount * 2); // Byte count is 2 bytes per register
-    for (int i = 0; i < registerCount; ++i) {
-        responseStream << inputRegisters[startAddress + i];
-    }
-}
-
-void ModbusTcpSlave::processWriteMultipleCoilsRequest(QDataStream &stream,
-                                                      QDataStream &responseStream)
-{
-    quint16 startAddress, coilCount;
-    quint8 byteCount;
-    stream >> startAddress >> coilCount >> byteCount;
-
-    qDebug() << "Write Multiple Coils - Start Address:" << startAddress
-             << "Coil Count:" << coilCount << "Byte Count:" << byteCount;
-
-    quint8 data;
-    for (int i = 0; i < coilCount; ++i) {
-        if (i % 8 == 0) {
-            stream >> data;
-        }
-        updateCoil(startAddress + i, (data & (1 << (i % 8))) != 0);
-    }
-
-    responseStream << startAddress << coilCount;
-}
-#endif
 
 QByteArray ModbusTcpSlave::createResponse(const QByteArray &request)
 {
@@ -300,14 +263,6 @@ QByteArray ModbusTcpSlave::createResponse(const QByteArray &request)
     case 0x02: // Read Discrete Inputs
         processReadDiscreteInputsRequest(stream, responseStream);
         break;
-#ifndef STUDENT_VERSION
-    case 0x04: // Read Input Registers
-        processReadInputRegistersRequest(stream, responseStream);
-        break;
-    case 0x0F: // Write Multiple Coils
-        processWriteMultipleCoilsRequest(stream, responseStream);
-        break;
-#else
 #warning TODO: Implementar estas funciones y reactivar el código
         // case 0x04: // Read Input Registers
         //     processReadInputRegistersRequest(stream, responseStream);
@@ -315,7 +270,6 @@ QByteArray ModbusTcpSlave::createResponse(const QByteArray &request)
         // case 0x0F: // Write Multiple Coils
         //     processWriteMultipleCoilsRequest(stream, responseStream);
         //     break;
-#endif
 
     default:
         qWarning() << "Función no soportada. Código de función:" << functionCode;

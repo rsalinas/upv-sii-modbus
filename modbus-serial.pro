@@ -18,8 +18,8 @@ SUBDIRS += \
     meteo-client \
     weather-modbustcp-slave \
     p3-master-cli-alu \
-    p4-slave-cli \
-    p4-slave-cli-alu
+    p3-slave-cli \
+    p3-slave-cli-alu
 
 
 #    p2-simple \     meteoclient-cli joystick-lib-test1 \ p2-ejemplo \

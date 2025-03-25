@@ -265,6 +265,10 @@ void ModbusTcpSlave::processWriteMultipleCoilsRequest(QDataStream &stream,
 
     responseStream << startAddress << coilCount;
 }
+#else
+#warning TODO: Implement processReadDiscreteInputsRequest
+#warning TODO: Implement processReadInputRegistersRequest
+#warning TODO: Implement processWriteMultipleCoilsRequest
 #endif
 
 QByteArray ModbusTcpSlave::createResponse(const QByteArray &request)
@@ -308,11 +312,10 @@ QByteArray ModbusTcpSlave::createResponse(const QByteArray &request)
         processWriteMultipleCoilsRequest(stream, responseStream);
         break;
 #else
-#warning TODO: Implementar estas funciones y reactivar el código
+#warning TODO: Implementar estas 3 funciones y reactivar el código
         // case 0x02: // Read Discrete Inputs
         //     processReadDiscreteInputsRequest(stream, responseStream);
         //     break;
-
         // case 0x04: // Read Input Registers
         //     processReadInputRegistersRequest(stream, responseStream);
         //     break;

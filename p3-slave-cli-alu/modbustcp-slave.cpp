@@ -204,6 +204,9 @@ void ModbusTcpSlave::processReadCoilsRequest(QDataStream &stream, QDataStream &r
     }
 }
 
+#warning TODO: Implement processReadDiscreteInputsRequest
+#warning TODO: Implement processReadInputRegistersRequest
+#warning TODO: Implement processWriteMultipleCoilsRequest
 
 QByteArray ModbusTcpSlave::createResponse(const QByteArray &request)
 {

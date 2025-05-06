@@ -34,6 +34,9 @@ signals:
     void coilChanged(int index, bool value);
     void discreteInputChanged(int index, bool value);
     void inputRegisterChanged(int index, quint16 value);
+    QVector<bool> coils;             // Bobinas (red, green, blue)
+    QVector<bool> discreteInputs;    // Entradas discretas (boton0, boton1)
+    QVector<quint16> inputRegisters; // Registros de entrada (pressure, temperature)
 
 protected:
     void incomingConnection(qintptr socketDescriptor) override;
@@ -46,10 +49,6 @@ private:
     void processRequest(QTcpSocket *socket, const QByteArray &request);
     QByteArray createResponse(const QByteArray &request);
 
-    // Datos simulados del esclavo
-    QVector<bool> coils;             // Bobinas (red, green, blue)
-    QVector<bool> discreteInputs;    // Entradas discretas (boton0, boton1)
-    QVector<quint16> inputRegisters; // Registros de entrada (pressure, temperature)
 
     void processReadCoilsRequest(QDataStream &stream, QDataStream &responseStream);
     void processReadDiscreteInputsRequest(QDataStream &stream, QDataStream &responseStream);

@@ -8,11 +8,14 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    coils = {false, false, false};
+    modbus.coils = {false, false, false};
     discreteInputs = {true, true};
     inputRegisters = {1013, 25};
 
-    connect(ui->sliderPressure, &QSlider::valueChanged, this, &MainWindow::on_sliderPressure_valueChanged);
+    connect(ui->sliderPressure,
+            &QSlider::valueChanged,
+            this,
+            &MainWindow::on_sliderPressure_valueChanged);
     connect(ui->sliderTemperature, &QSlider::valueChanged, this, &MainWindow::on_sliderTemperature_valueChanged);
     connect(ui->buttonDiscrete, &QPushButton::pressed, this, &MainWindow::on_buttonDiscrete_pressed);
     connect(ui->buttonDiscrete, &QPushButton::released, this, &MainWindow::on_buttonDiscrete_released);

@@ -28,9 +28,6 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
-    QVector<bool> coils;
-    QVector<bool> discreteInputs;
-    QVector<quint16> inputRegisters;
     ModbusTcpSlave modbus;
 };
 

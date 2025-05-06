@@ -5,14 +5,11 @@ TARGET = p3-slave-gui
 
 SOURCES += \
     src/main.cpp \
-    src/mainwindow.cpp
+    src/mainwindow.cpp src/modbustcp-slave.cpp
 
 HEADERS += \
-    src/mainwindow.h
+    src/mainwindow.h src/modbustcp-slave.h
 
 FORMS += \
     ui/mainwindow.ui
 
-INCLUDEPATH += ../p3-slave-cli
-DEPENDPATH += ../p3-slave-cli
-LIBS += -L../p3-slave-cli -lp3-slave-cli

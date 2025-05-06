@@ -23,6 +23,8 @@ public:
     void readInputRegistersAsync(int count = 1, int first = 0);
     void readDiscreteCoilsAsync(int count = 1, int first = 0);
 
+    bool setCoils(const QBitArray &coils, int start = 0);
+
     bool connectDevice();
     void disconnectDevice();
     bool isConnected() const;

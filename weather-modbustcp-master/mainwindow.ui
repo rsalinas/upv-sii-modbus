@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry"><rect><x>0</x><y>0</y><width>800</width><height>600</height></rect></property>
+  <property name="windowTitle"><string>Weather Modbus Master</string></property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <widget class="QChartView" name="chartView"/>
+    </item>
+    <item>
+     <layout class="QHBoxLayout">
+      <item><widget class="QCheckBox" name="checkBoxRed"><property name="text"><string>Rojo</string></property></widget></item>
+      <item><widget class="QCheckBox" name="checkBoxGreen"><property name="text"><string>Verde</string></property></widget></item>
+      <item><widget class="QCheckBox" name="checkBoxBlue"><property name="text"><string>Azul</string></property></widget></item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

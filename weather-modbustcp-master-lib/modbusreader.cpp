@@ -200,3 +200,32 @@ void ModbusReader::handleDiscreteCoilsReply()
     }
     reply->deleteLater();
 }
+
+bool ModbusReader::setCoils(const QBitArray &coils, int start)
+{
+    if (!pimpl->modbusDevice)
+        return false;
+
+    QModbusDataUnit writeUnit(QModbusDataUnit::Coils, start, coils.size());
+    for (int i = 0; i < coils.size(); ++i) {
+        writeUnit.setValue(i, coils.testBit(i) ? 1 : 0);
+    }
+
+    QModbusReply *reply = pimpl->modbusDevice->sendWriteRequest(writeUnit, pimpl->deviceAddress);
+    if (!reply) {
+        qWarning() << "Error al enviar la escritura de coils:"
+                   << pimpl->modbusDevice->errorString();
+        return false;
+    }
+
+    QEventLoop loop;
+    connect(reply, &QModbusReply::finished, &loop, &QEventLoop::quit);
+    loop.exec();
+
+    bool success = (reply->error() == QModbusDevice::NoError);
+    if (!success)
+        qWarning() << "Error en respuesta de escritura:" << reply->errorString();
+
+    reply->deleteLater();
+    return success;
+}

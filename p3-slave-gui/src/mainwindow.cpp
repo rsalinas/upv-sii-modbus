@@ -1,10 +1,20 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+#include <QStatusBar>
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    if (!modbus.listen(QHostAddress::Any, 1502)) {
+        qCritical() << "No se pudo iniciar el servidor Modbus TCP.";
+        statusBar()->showMessage("Fallo al iniciar el servidor Modbus TCP");
+    } else {
+        qDebug() << "Servidor Modbus TCP iniciado en el puerto 1502.";
+        statusBar()->showMessage("Servidor Modbus TCP iniciado en el puerto 1502");
+    }
 
     coils = {false, false, false};
     discreteInputs = {true, true};

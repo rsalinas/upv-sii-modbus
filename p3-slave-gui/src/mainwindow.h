@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QVector>
+#include "modbustcp-slave.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -30,6 +31,7 @@ private:
     QVector<bool> coils;
     QVector<bool> discreteInputs;
     QVector<quint16> inputRegisters;
+    ModbusTcpSlave modbus;
 };
 
 #endif // MAINWINDOW_H

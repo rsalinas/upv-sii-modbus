@@ -21,7 +21,9 @@ SUBDIRS += \
     weather-modbustcp-slave \
     p3-master-cli-alu \
     p3-slave-cli \
-    p3-slave-cli-alu
+    p3-slave-cli-alu \
+    p3-master-gui \
+    p3-slave-gui
 
 
 #    p2-simple \     meteoclient-cli joystick-lib-test1 \ p2-ejemplo \

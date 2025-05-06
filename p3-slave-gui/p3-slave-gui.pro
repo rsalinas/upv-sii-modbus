@@ -13,6 +13,3 @@ HEADERS += \
 FORMS += \
     ui/mainwindow.ui
 
-# INCLUDEPATH += ../p3-slave-cli
-# DEPENDPATH += ../p3-slave-cli
-# LIBS += -L../p3-slave-cli -lp3-slave-cli

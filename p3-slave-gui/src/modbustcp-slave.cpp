@@ -237,7 +237,7 @@ void ModbusTcpSlave::processReadInputRegistersRequest(QDataStream &stream,
     stream >> startAddress >> registerCount;
 
     qDebug() << "Read Input Registers - Start Address:" << startAddress
-             << "Register Count:" << registerCount;
+             << "Register Count:" << registerCount << " vs " << inputRegisters.size();
 
     responseStream << quint8(registerCount * 2); // Byte count is 2 bytes per register
     for (int i = 0; i < registerCount; ++i) {

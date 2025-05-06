@@ -2,19 +2,67 @@
 <ui version="4.0">
  <class>MainWindow</class>
  <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>240</width>
+    <height>317</height>
+   </rect>
+  </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout">
-    <item><widget class="QSlider" name="sliderPressure"/></item>
-    <item><widget class="QLineEdit" name="editPressure"/></item>
-    <item><widget class="QSlider" name="sliderTemperature"/></item>
-    <item><widget class="QLineEdit" name="editTemperature"/></item>
-    <item><widget class="QPushButton" name="buttonDiscrete"><property name="text"><string>Botón 0</string></property></widget></item>
-    <item><widget class="QPushButton" name="buttonDiscrete2"><property name="text"><string>Botón 1</string></property></widget></item>
-    <item><layout class="QHBoxLayout">
-      <item><widget class="QFrame" name="ledRed"><property name="frameShape"><enum>QFrame::Box</enum></property></widget></item>
-      <item><widget class="QFrame" name="ledBlue"><property name="frameShape"><enum>QFrame::Box</enum></property></widget></item>
-      <item><widget class="QFrame" name="ledGreen"><property name="frameShape"><enum>QFrame::Box</enum></property></widget></item>
-    </layout></item>
+    <item>
+     <widget class="QSlider" name="sliderPressure"/>
+    </item>
+    <item>
+     <widget class="QLineEdit" name="editPressure"/>
+    </item>
+    <item>
+     <widget class="QSlider" name="sliderTemperature"/>
+    </item>
+    <item>
+     <widget class="QLineEdit" name="editTemperature"/>
+    </item>
+    <item>
+     <widget class="QPushButton" name="buttonDiscrete">
+      <property name="text">
+       <string>Botón 0</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="buttonDiscrete2">
+      <property name="text">
+       <string>Botón 1</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <layout class="QHBoxLayout">
+      <item>
+       <widget class="QFrame" name="ledRed">
+        <property name="frameShape">
+         <enum>QFrame::Shape::Box</enum>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QFrame" name="ledBlue">
+        <property name="frameShape">
+         <enum>QFrame::Shape::Box</enum>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QFrame" name="ledGreen">
+        <property name="frameShape">
+         <enum>QFrame::Shape::Box</enum>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
    </layout>
   </widget>
  </widget>

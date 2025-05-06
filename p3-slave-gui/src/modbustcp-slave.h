@@ -28,15 +28,15 @@ public:
     QVector<quint16> getInputRegisters() const;
     void setInputRegister(int index, quint16 value); // Cambiar un registro de entrada individual
     quint16 getInputRegister(int index) const;       // Obtener un registro de entrada individual
+    QVector<bool> coils;                             // Bobinas (red, green, blue)
+    QVector<bool> discreteInputs;                    // Entradas discretas (boton0, boton1)
+    QVector<quint16> inputRegisters;                 // Registros de entrada (pressure, temperature)
 
 signals:
     // Señales emitidas cuando cambian los valores
     void coilChanged(int index, bool value);
     void discreteInputChanged(int index, bool value);
     void inputRegisterChanged(int index, quint16 value);
-    QVector<bool> coils;             // Bobinas (red, green, blue)
-    QVector<bool> discreteInputs;    // Entradas discretas (boton0, boton1)
-    QVector<quint16> inputRegisters; // Registros de entrada (pressure, temperature)
 
 protected:
     void incomingConnection(qintptr socketDescriptor) override;

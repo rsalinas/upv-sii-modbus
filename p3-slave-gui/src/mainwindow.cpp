@@ -9,8 +9,8 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
 
     modbus.coils = {false, false, false};
-    discreteInputs = {true, true};
-    inputRegisters = {1013, 25};
+    modbus.discreteInputs = {true, true};
+    modbus.inputRegisters = {1013, 25};
 
     connect(ui->sliderPressure,
             &QSlider::valueChanged,
@@ -40,38 +40,41 @@ MainWindow::~MainWindow()
 void MainWindow::on_sliderPressure_valueChanged(int value)
 {
     ui->editPressure->setText(QString::number(value));
-    inputRegisters[0] = value;
+    modbus.inputRegisters[0] = value;
 }
 
 void MainWindow::on_sliderTemperature_valueChanged(int value)
 {
     ui->editTemperature->setText(QString::number(value));
-    inputRegisters[1] = value;
+    modbus.inputRegisters[1] = value;
 }
 
 void MainWindow::on_buttonDiscrete_pressed()
 {
-    discreteInputs[0] = true;
+    modbus.discreteInputs[0] = true;
 }
 
 void MainWindow::on_buttonDiscrete_released()
 {
-    discreteInputs[0] = false;
+    modbus.discreteInputs[0] = false;
 }
 
 void MainWindow::on_buttonDiscrete2_pressed()
 {
-    discreteInputs[1] = true;
+    modbus.discreteInputs[1] = true;
 }
 
 void MainWindow::on_buttonDiscrete2_released()
 {
-    discreteInputs[1] = false;
+    modbus.discreteInputs[1] = false;
 }
 
 void MainWindow::updateLEDs()
 {
-    ui->ledRed->setStyleSheet(coils[0] ? "background-color: red;" : "background-color: black;");
-    ui->ledBlue->setStyleSheet(coils[1] ? "background-color: blue;" : "background-color: black;");
-    ui->ledGreen->setStyleSheet(coils[2] ? "background-color: green;" : "background-color: black;");
+    ui->ledRed->setStyleSheet(modbus.coils[0] ? "background-color: red;"
+                                              : "background-color: black;");
+    ui->ledBlue->setStyleSheet(modbus.coils[1] ? "background-color: blue;"
+                                               : "background-color: black;");
+    ui->ledGreen->setStyleSheet(modbus.coils[2] ? "background-color: green;"
+                                                : "background-color: black;");
 }

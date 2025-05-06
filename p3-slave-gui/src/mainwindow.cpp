@@ -8,14 +8,6 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    if (!modbus.listen(QHostAddress::Any, 1502)) {
-        qCritical() << "No se pudo iniciar el servidor Modbus TCP.";
-        statusBar()->showMessage("Fallo al iniciar el servidor Modbus TCP");
-    } else {
-        qDebug() << "Servidor Modbus TCP iniciado en el puerto 1502.";
-        statusBar()->showMessage("Servidor Modbus TCP iniciado en el puerto 1502");
-    }
-
     coils = {false, false, false};
     discreteInputs = {true, true};
     inputRegisters = {1013, 25};
@@ -28,6 +20,13 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->buttonDiscrete2, &QPushButton::released, this, &MainWindow::on_buttonDiscrete2_released);
 
     updateLEDs();
+    if (!modbus.listen(QHostAddress::Any, 1502)) {
+        qCritical() << "No se pudo iniciar el servidor Modbus TCP.";
+        statusBar()->showMessage("Fallo al iniciar el servidor Modbus TCP");
+    } else {
+        qDebug() << "Servidor Modbus TCP iniciado en el puerto 1502.";
+        statusBar()->showMessage("Servidor Modbus TCP iniciado en el puerto 1502");
+    }
 }
 
 MainWindow::~MainWindow()

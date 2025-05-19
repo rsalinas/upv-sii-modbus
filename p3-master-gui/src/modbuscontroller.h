@@ -14,6 +14,7 @@ public:
     bool connectToHost(const QString &host, quint16 port);
     bool readData(quint16 &pressure, quint16 &temperature);
     bool setLEDs(bool r, bool g, bool b);
+    bool readButtons(bool &b1, bool &b2);
 
 private:
     ModbusTcpClient modbus;

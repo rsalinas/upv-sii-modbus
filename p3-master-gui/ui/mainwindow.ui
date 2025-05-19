@@ -20,6 +20,25 @@
       <item><widget class="QCheckBox" name="checkBoxBlue"><property name="text"><string>Azul</string></property></widget></item>
      </layout>
     </item>
+        <item>
+     <layout class="QHBoxLayout" name="buttonStatusLayout">
+      <item>
+       <widget class="QCheckBox" name="checkBoxButton1">
+        <property name="text">
+         <string>Botón 1</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="checkBoxButton2">
+        <property name="text">
+         <string>Botón 2</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+
    </layout>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>

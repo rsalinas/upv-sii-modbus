@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+#include <QMessageBox>
 #include <QStatusBar>
 
 MainWindow::MainWindow(QWidget *parent)
@@ -21,6 +22,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->buttonDiscrete, &QPushButton::released, this, &MainWindow::on_buttonDiscrete_released);
     connect(ui->buttonDiscrete2, &QPushButton::pressed, this, &MainWindow::on_buttonDiscrete2_pressed);
     connect(ui->buttonDiscrete2, &QPushButton::released, this, &MainWindow::on_buttonDiscrete2_released);
+    connect(&modbus, &ModbusTcpSlave::coilChanged, this, &MainWindow::updateLEDs);
 
     updateLEDs();
     if (!modbus.listen(QHostAddress::Any, 1502)) {
@@ -28,8 +30,34 @@ MainWindow::MainWindow(QWidget *parent)
         statusBar()->showMessage("Fallo al iniciar el servidor Modbus TCP");
     } else {
         qDebug() << "Servidor Modbus TCP iniciado en el puerto 1502.";
-        statusBar()->showMessage("Servidor Modbus TCP iniciado en el puerto 1502");
+        statusBar()->showMessage("Esclavo Modbus-TCP escuchando en el puerto 1502");
     }
+    modbus.discreteInputs[0] = false;
+    modbus.discreteInputs[1] = false;
+    ui->editPressure->setText(QString::number(ui->sliderPressure->value()));
+    ui->editTemperature->setText(QString::number(ui->sliderTemperature->value()));
+    connect(ui->editPressure, &QLineEdit::editingFinished, this, [=]() {
+        bool ok;
+        int val = ui->editPressure->text().toInt(&ok);
+        if (ok && val >= ui->sliderPressure->minimum() && val <= ui->sliderPressure->maximum()) {
+            ui->sliderPressure->setValue(val);
+        }
+        if (!ok) {
+            QMessageBox::warning(this, "Entrada inválida", "Introduce un número válido.");
+        }
+    });
+
+    connect(ui->editTemperature, &QLineEdit::editingFinished, this, [=]() {
+        bool ok;
+        int val = ui->editTemperature->text().toInt(&ok);
+        if (ok && val >= ui->sliderTemperature->minimum()
+            && val <= ui->sliderTemperature->maximum()) {
+            ui->sliderTemperature->setValue(val);
+        }
+        if (!ok) {
+            QMessageBox::warning(this, "Entrada inválida", "Introduce un número válido.");
+        }
+    });
 }
 
 MainWindow::~MainWindow()

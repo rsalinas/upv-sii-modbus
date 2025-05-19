@@ -3,7 +3,6 @@
 ModbusTcpSlave::ModbusTcpSlave(QObject *parent)
     : QTcpServer(parent)
 {
-    // La inicialización de los datos se ha movido al main
 }
 
 // Métodos para coils

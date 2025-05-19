@@ -40,7 +40,7 @@ MainWindow::MainWindow(QWidget *parent)
     chart->addAxis(axisYTemp, Qt::AlignLeft);
     tempSeries->attachAxis(axisYTemp);
 
-    axisYPres->setRange(900, 1100);
+    axisYPres->setRange(950, 1050);
     axisYPres->setTitleText("Presión (hPa)");
     chart->addAxis(axisYPres, Qt::AlignRight);
     presSeries->attachAxis(axisYPres);
@@ -75,5 +75,11 @@ void MainWindow::updateData()
         axisX->setMin(now.addSecs(-60));
         axisX->setMax(now);
         statusBar()->showMessage(QString("Presión: %1 hPa, Temp: %2 ºC").arg(p).arg(t));
+    }
+
+    bool btn1, btn2;
+    if (controller.readButtons(btn1, btn2)) {
+        ui->checkBoxButton1->setChecked(btn1);
+        ui->checkBoxButton2->setChecked(btn2);
     }
 }
